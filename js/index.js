@@ -16,12 +16,9 @@ create.innerHTML += innerForm
 
 fetch('http://localhost:3000/monsters/?_limit=20&_page=1') 
   .then(res => res.json())
-  .then(data => data.map(monster => renderMonster(monster)))
+  .then(data => data.map(monster => renderMonster(monster), document.createElement('hr')))
 
 const form = document.getElementById('monster-form')
-const name = document.getElementById('name')
-const age = document.getElementById('age')
-const description = document.getElementById('description')
 
 form.addEventListener('submit', (e) => {
   e.preventDefault()
@@ -49,25 +46,31 @@ form.addEventListener('submit', (e) => {
   .then(data => console.log(data))
 
 back.addEventListener('click', () => {
-    if (page === 1) {
-        window.alert('No More!')
-    } else {
+   
     page -= 1
     fetch(`http://localhost:3000/monsters/?_limit=50&_page=${page}`)
     .then(res => res.json())
     .then(data => {
+        if (page === 1) {
+            window.alert('No More!')
+        } else {
         container.innerHTML = `Page ${page}`
-        data.map(monster => container.append(renderMonster(monster)))
+        data.map(monster => renderMonster(monster), document.createElement('hr'))
+        }
+        })
     })
-    }
-})
 forward.addEventListener('click', () => {
 page += 1
   fetch(`http://localhost:3000/monsters/?_limit=50&_page=${page}`)
   .then(res => res.json())
     .then(data => {
+        if (data.length === 0){
+            page -= 1
+           window.alert('No Mo!')
+        } else { 
         container.innerHTML = `Page ${page}`
-        data.map(monster => container.append(renderMonster(monster)))
+        data.map(monster => renderMonster(monster), document.createElement('hr'))
+    }
     })
 })
 
@@ -81,3 +84,9 @@ function renderMonster(monster) {
     container.innerHTML += newMonster
  }
 })
+
+
+// const name = document.getElementById('name')
+// const age = document.getElementById('age')
+// const description = document.getElementById('description')
+
